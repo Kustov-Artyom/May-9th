@@ -1,0 +1,23 @@
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 30px;
+  padding: 40px 20px;
+  max-width: 1360px;
+  margin: 0 auto;
+}
+
+.gallery-empty {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 24px;
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .gallery {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 20px 10px;
+  }
+}
