@@ -11,12 +11,19 @@ function Header() {
 
             <div className="header-content">
                 <div className="logo-container">
-                    <img src="/images/logo.png" alt="Логотип" className="logo" />
+                    <img src="/images/logo.png" alt="Логотип УРАЛЬСКАЯ СТАЛЬ" className="logo" />
                 </div>
 
                 <div className="header-text">
                     <h1 className="header-title">ПОМНИМ</h1>
-                    <p className="header-subtitle">Расскажи свою историю о ветеране</p>
+                    <div className="header-description">
+                        <p>Этот сайт — наша Книга памяти героев в лицах, созданная сотрудниками Группы компаний «Уральская Сталь». Здесь мы публикуем фотографии наших отцов, дедов и прадедов, чтобы сохранить память о каждом, кто сражался за Победу в Великой Отечественной войне.</p>
+                        <p className="description-highlight">Присоединяйтесь к «Бессмертному полку» нашей компании: присылайте снимки родных и делитесь историями их подвигов.</p>
+                        <p className="description-email">
+                            <span>Прислать историю на почту:</span> 
+                            <a href="mailto:a.hitrik@uralsteel.com">a.hitrik@uralsteel.com</a>
+                        </p>
+                    </div>
                 </div>
 
                 <div className="header-main-title">

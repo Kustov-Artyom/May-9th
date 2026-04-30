@@ -27,21 +27,59 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// Простая база данных (в реальном проекте используйте MongoDB/PostgreSQL)
+// Хранилища данных
 let heroes = [];
 let battles = [];
 
-// Загрузка данных из JSON файла
+// Пути к JSON файлам
 const heroesFilePath = path.join(__dirname, '../src/data/heroes.json');
-try {
-  const data = fs.readFileSync(heroesFilePath, 'utf8');
-  heroes = JSON.parse(data);
-} catch (error) {
-  console.log('Heroes file not found or invalid');
+const battlesFilePath = path.join(__dirname, '../src/data/battles.json');
+
+// Загрузка данных из JSON файлов
+function loadData() {
+  // Загрузка героев
+  try {
+    const heroesData = fs.readFileSync(heroesFilePath, 'utf8');
+    heroes = JSON.parse(heroesData);
+    console.log(`Загружено ${heroes.length} героев`);
+  } catch (error) {
+    console.log('Heroes file not found or invalid, starting with empty array');
+    heroes = [];
+  }
+
+  // Загрузка сюжетов
+  try {
+    const battlesData = fs.readFileSync(battlesFilePath, 'utf8');
+    battles = JSON.parse(battlesData);
+    console.log(`Загружено ${battles.length} сюжетов`);
+  } catch (error) {
+    console.log('Battles file not found or invalid, starting with empty array');
+    battles = [];
+  }
+}
+
+// Сохранение героев в JSON файл
+function saveHeroes() {
+  try {
+    fs.writeFileSync(heroesFilePath, JSON.stringify(heroes, null, 2));
+    console.log('Герои сохранены');
+  } catch (error) {
+    console.error('Ошибка сохранения героев:', error);
+  }
+}
+
+// Сохранение сюжетов в JSON файл
+function saveBattles() {
+  try {
+    fs.writeFileSync(battlesFilePath, JSON.stringify(battles, null, 2));
+    console.log('Сюжеты сохранены');
+  } catch (error) {
+    console.error('Ошибка сохранения сюжетов:', error);
+  }
 }
 
 // Хеш пароля администратора (пароль: admin123)
-const ADMIN_PASSWORD_HASH = '$2b$10$0Xuy11FFe.7PSDyIXyZhA.uvUF0N05IIVmpwhJzw4RmB86lq6D9ba'; // Сгенерируешь ниже
+const ADMIN_PASSWORD_HASH = '$2b$10$0Xuy11FFe.7PSDyIXyZhA.uvUF0N05IIVmpwhJzw4RmB86lq6D9ba';
 const ADMIN_USERNAME = 'admin';
 
 // Генерация хеша пароля (выполни один раз)
@@ -120,13 +158,7 @@ app.post('/api/heroes', authenticateToken, upload.single('image'), (req, res) =>
   };
 
   heroes.push(newHero);
-  
-  // Сохраняем в JSON файл
-  try {
-    fs.writeFileSync(heroesFilePath, JSON.stringify(heroes, null, 2));
-  } catch (error) {
-    console.error('Ошибка сохранения:', error);
-  }
+  saveHeroes(); // Сохраняем в JSON файл
 
   res.status(201).json(newHero);
 });
@@ -152,13 +184,7 @@ app.put('/api/heroes/:id', authenticateToken, upload.single('image'), (req, res)
   };
 
   heroes[heroIndex] = updatedHero;
-  
-  // Сохраняем в JSON файл
-  try {
-    fs.writeFileSync(heroesFilePath, JSON.stringify(heroes, null, 2));
-  } catch (error) {
-    console.error('Ошибка сохранения:', error);
-  }
+  saveHeroes(); // Сохраняем в JSON файл
 
   res.json(updatedHero);
 });
@@ -172,23 +198,19 @@ app.delete('/api/heroes/:id', authenticateToken, (req, res) => {
   }
 
   heroes.splice(heroIndex, 1);
-  
-  // Сохраняем в JSON файл
-  try {
-    fs.writeFileSync(heroesFilePath, JSON.stringify(heroes, null, 2));
-  } catch (error) {
-    console.error('Ошибка сохранения:', error);
-  }
+  saveHeroes(); // Сохраняем в JSON файл
 
   res.json({ message: 'Герой удален' });
 });
 
 // ==================== BATTLES ROUTES ====================
 
+// Получить все сюжеты
 app.get('/api/battles', (req, res) => {
   res.json(battles);
 });
 
+// Добавить сюжет (с загрузкой фото)
 app.post('/api/battles', authenticateToken, upload.single('image'), (req, res) => {
   const newBattle = {
     id: battles.length > 0 ? Math.max(...battles.map(b => b.id)) + 1 : 1,
@@ -199,9 +221,34 @@ app.post('/api/battles', authenticateToken, upload.single('image'), (req, res) =
   };
 
   battles.push(newBattle);
+  saveBattles(); // Сохраняем в JSON файл
+
   res.status(201).json(newBattle);
 });
 
+// Обновить сюжет
+app.put('/api/battles/:id', authenticateToken, upload.single('image'), (req, res) => {
+  const battleIndex = battles.findIndex(b => b.id === parseInt(req.params.id));
+  
+  if (battleIndex === -1) {
+    return res.status(404).json({ message: 'Сюжет не найден' });
+  }
+
+  const updatedBattle = {
+    ...battles[battleIndex],
+    title: req.body.title || battles[battleIndex].title,
+    year: req.body.year || battles[battleIndex].year,
+    description: req.body.description || battles[battleIndex].description,
+    image: req.file ? req.file.filename : battles[battleIndex].image
+  };
+
+  battles[battleIndex] = updatedBattle;
+  saveBattles(); // Сохраняем в JSON файл
+
+  res.json(updatedBattle);
+});
+
+// Удалить сюжет
 app.delete('/api/battles/:id', authenticateToken, (req, res) => {
   const battleIndex = battles.findIndex(b => b.id === parseInt(req.params.id));
   
@@ -210,64 +257,17 @@ app.delete('/api/battles/:id', authenticateToken, (req, res) => {
   }
 
   battles.splice(battleIndex, 1);
+  saveBattles(); // Сохраняем в JSON файл
+
   res.json({ message: 'Сюжет удален' });
 });
 
-// ================= UPDATE HERO =================
-app.put('/api/heroes/:id', authenticateToken, upload.single('image'), (req, res) => {
-  const heroId = parseInt(req.params.id);
-  const heroIndex = heroes.findIndex(h => h.id === heroId);
-
-  if (heroIndex === -1) return res.status(404).json({ message: 'Герой не найден' });
-
-  const hero = heroes[heroIndex];
-  
-  // Обновляем поля, если они пришли в запросе
-  hero.fullName = req.body.fullName || hero.fullName;
-  hero.birthYear = req.body.birthYear || hero.birthYear;
-  hero.rank = req.body.rank || hero.rank;
-  hero.unit = req.body.unit || hero.unit;
-  hero.history = req.body.history || hero.history;
-  hero.source = req.body.source || hero.source;
-  if (req.body.awards) hero.awards = JSON.parse(req.body.awards);
-  
-  // Если загрузили новое фото, обновляем имя файла
-  if (req.file) {
-    hero.image = req.file.filename;
-  }
-
-  heroes[heroIndex] = hero;
-
-  // Сохраняем в файл
-  fs.writeFileSync(heroesFilePath, JSON.stringify(heroes, null, 2));
-  res.json({ message: 'Герой обновлен', hero });
-});
-
-// ================= UPDATE BATTLE =================
-app.put('/api/battles/:id', authenticateToken, upload.single('image'), (req, res) => {
-  const battleId = parseInt(req.params.id);
-  const battleIndex = battles.findIndex(b => b.id === battleId);
-
-  if (battleIndex === -1) return res.status(404).json({ message: 'Сюжет не найден' });
-
-  const battle = battles[battleIndex];
-  
-  battle.title = req.body.title || battle.title;
-  battle.year = req.body.year || battle.year;
-  battle.description = req.body.description || battle.description;
-  
-  if (req.file) {
-    battle.image = req.file.filename;
-  }
-
-  battles[battleIndex] = battle;
-  res.json({ message: 'Сюжет обновлен', battle });
-});
+// Загрузка данных при старте сервера
+loadData();
 
 // Запуск сервера
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
-  console.log('Для генерации хеша пароля выполни: node -e "require(\'./index.js\').generatePasswordHash()"');
 });
 
 module.exports = { generatePasswordHash };

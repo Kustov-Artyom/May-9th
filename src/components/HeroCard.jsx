@@ -1,8 +1,21 @@
+import { useState } from 'react';
 import './HeroCard.css';
 
 function HeroCard({ hero }) {
+  const [showDetails, setShowDetails] = useState(false);
+
+  const handleCardClick = () => {
+    // Проверяем, что это мобильное устройство (ширина экрана <= 768px)
+    if (window.innerWidth <= 768) {
+      setShowDetails(!showDetails);
+    }
+  };
+
   return (
-    <div className="hero-card">
+    <div 
+      className={`hero-card ${showDetails ? 'show-details' : ''}`} 
+      onClick={handleCardClick}
+    >
       <div className="hero-image-container">
         <img src={`/images/${hero.image}`} alt={hero.fullName} className="hero-image" />
         <div className="hero-overlay">

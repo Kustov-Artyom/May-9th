@@ -41,11 +41,72 @@
   visibility: hidden;
   transition: all 0.3s ease;
   overflow-y: auto;
+  max-height: 100%;
 }
 
+/* Показываем оверлей при наведении на десктопе */
 .hero-card:hover .hero-overlay {
   opacity: 1;
   visibility: visible;
+}
+
+/* Показываем оверлей при клике на мобильных */
+.hero-card.show-details .hero-overlay {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Скрываем фото на мобильных когда показываем детали */
+.hero-card.show-details .hero-image {
+  display: none;
+}
+
+/* Показываем фото на мобильных когда скрыты детали */
+.hero-card:not(.show-details) .hero-image {
+  display: block;
+}
+
+/* На мобильных скрываем оверлей по умолчанию */
+@media (max-width: 768px) {
+  .hero-card {
+    max-width: 100%;
+    cursor: pointer;
+  }
+  
+  .hero-image-container {
+    height: 350px;
+  }
+  
+  .hero-name {
+    font-size: 18px;
+  }
+  
+  .hero-overlay {
+    padding: 15px;
+    opacity: 0;
+    visibility: hidden;
+    position: absolute;
+  }
+  
+  /* Отключаем hover на мобильных полностью */
+  .hero-card:hover .hero-overlay {
+    opacity: 0;
+    visibility: hidden;
+  }
+  
+  .hero-card:hover .hero-image {
+    display: block;
+  }
+  
+  /* Показываем детали только при классе show-details */
+  .hero-card.show-details .hero-overlay {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .hero-card.show-details .hero-image {
+    display: none;
+  }
 }
 
 .hero-content {
@@ -132,20 +193,12 @@
   margin: 0;
 }
 
-@media (max-width: 768px) {
-  .hero-card {
-    max-width: 100%;
-  }
-  
+@media (max-width: 480px) {
   .hero-image-container {
-    height: 350px;
-  }
-  
-  .hero-name {
-    font-size: 18px;
+    height: 300px;
   }
   
   .hero-overlay {
-    padding: 15px;
+    font-size: 13px;
   }
 }
