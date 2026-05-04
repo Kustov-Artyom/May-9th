@@ -215,11 +215,11 @@ function AdminDashboard() {
           <form className="add-hero-form" onSubmit={handleHeroSubmit}>
             <h3>{editingHeroId ? 'Редактирование героя' : 'Новый герой'}</h3>
             <input name="fullName" placeholder="ФИО" value={newHero.fullName} onChange={handleHeroInputChange} required />
-            <input name="birthYear" placeholder="Год рождения" value={newHero.birthYear} onChange={handleHeroInputChange} required />
-            <input name="rank" placeholder="Звание" value={newHero.rank} onChange={handleHeroInputChange} required />
+            <input name="birthYear" placeholder="Год рождения" value={newHero.birthYear} onChange={handleHeroInputChange} />
+            <input name="rank" placeholder="Звание" value={newHero.rank} onChange={handleHeroInputChange} />
             <input name="unit" placeholder="Часть" value={newHero.unit} onChange={handleHeroInputChange} />
             <textarea name="awards" placeholder="Награды (через запятую)" value={newHero.awards} onChange={handleHeroInputChange} />
-            <textarea name="history" placeholder="История" value={newHero.history} onChange={handleHeroInputChange} required />
+            <textarea name="history" placeholder="История" value={newHero.history} onChange={handleHeroInputChange} />
             <textarea name="source" placeholder="Источник" value={newHero.source} onChange={handleHeroInputChange} />
             <label className="file-label">
               Фото героя: <input type="file" accept="image/*" onChange={handleHeroImageChange} />
@@ -264,8 +264,8 @@ function AdminDashboard() {
           <form className="add-hero-form" onSubmit={handleBattleSubmit}>
             <h3>{editingBattleId ? 'Редактирование сюжета' : 'Новый сюжет'}</h3>
             <input name="title" placeholder="Название битвы" value={newBattle.title} onChange={handleBattleInputChange} required />
-            <input name="year" placeholder="Годы (напр. 1941-1942)" value={newBattle.year} onChange={handleBattleInputChange} required />
-            <textarea name="description" placeholder="Описание сюжета" value={newBattle.description} onChange={handleBattleInputChange} required />
+            <input name="year" placeholder="Годы (напр. 1941-1942)" value={newBattle.year} onChange={handleBattleInputChange} />
+            <textarea name="description" placeholder="Описание сюжета" value={newBattle.description} onChange={handleBattleInputChange} />
             <label className="file-label">
               Фото сюжета: <input type="file" accept="image/*" onChange={handleBattleImageChange} />
             </label>
