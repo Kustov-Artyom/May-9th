@@ -1,4 +1,6 @@
-const API_URL = 'http://localhost:5000/api';
+const API_URL = window.location.hostname === 'localhost' 
+  ? 'http://localhost:5000/api' 
+  : '/api';
 
 const api = {
   // --- AUTH ---
@@ -58,7 +60,6 @@ const api = {
     return response.json();
   },
 
-  // ВОТ ЭТОТ МЕТОД ВАЖЕН ДЛЯ РЕДАКТИРОВАНИЯ СЮЖЕТОВ:
   updateBattle: async (id, formData, token) => {
     const response = await fetch(`${API_URL}/battles/${id}`, {
       method: 'PUT',
