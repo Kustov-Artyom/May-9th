@@ -8,7 +8,7 @@ const path = require('path');
 
 const app = express();
 const PORT = 5000;
-const JWT_SECRET = 'your-secret-key-change-this-in-production';
+const JWT_SECRET = 'UralSteel_9May_SecureKey_2026!' + process.env.JWT_SALT;
 
 // Middleware
 app.use(cors());
@@ -79,9 +79,8 @@ function saveBattles() {
   }
 }
 
-// Хеш пароля администратора (пароль: admin123)
-const ADMIN_PASSWORD_HASH = '$2b$10$0Xuy11FFe.7PSDyIXyZhA.uvUF0N05IIVmpwhJzw4RmB86lq6D9ba';
-const ADMIN_USERNAME = 'admin';
+const ADMIN_PASSWORD_HASH = '$2b$10$TZKAmGueN9EtFqvamEKcEecdynxwfnon35vwqjZ.e1/DAZtW7XtZK';
+const ADMIN_USERNAME = 'uralsteelAdmin';
 
 // Генерация хеша пароля (выполни один раз)
 async function generatePasswordHash() {
