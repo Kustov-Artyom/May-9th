@@ -21,9 +21,10 @@ const storage = multer.diskStorage({
     cb(null, path.join(__dirname, '../public/images'));
   },
   filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    cb(null, Date.now() + ext);
-  }
+  const ext = path.extname(file.originalname).toLowerCase();
+  const uniqueName = `img-${Date.now()}${ext}`; // уникальное имя файла
+  cb(null, uniqueName);
+}
 });
 
 const upload = multer({ storage });
@@ -157,7 +158,7 @@ app.post('/api/heroes', authenticateToken, upload.single('image'), (req, res) =>
     image: req.file ? req.file.filename : 'default.jpg'
   };
 
-  heroes.push(newHero);
+  heroes.unshift(newHero);
   saveHeroes(); // Сохраняем в JSON файл
 
   res.status(201).json(newHero);
@@ -220,7 +221,7 @@ app.post('/api/battles', authenticateToken, upload.single('image'), (req, res) =
     image: req.file ? req.file.filename : 'default.jpg'
   };
 
-  battles.push(newBattle);
+  battles.unshift(newBattle);
   saveBattles(); // Сохраняем в JSON файл
 
   res.status(201).json(newBattle);
