@@ -26,7 +26,6 @@
   height: 100%;
   object-fit: cover;
   display: block;
-  object-position: top;
 }
 
 .hero-overlay {
@@ -76,10 +75,6 @@
   
   .hero-image-container {
     height: 350px;
-  }
-
-  .hero-image {
-    object-position: top center;
   }
   
   .hero-name {
